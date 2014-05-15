@@ -121,6 +121,7 @@ sub to_keypair {
 
             my $description = @{$i->get_Description}[0]->get_content();
 
+            my $source = $i->get_IncidentID->get_name();
             my $id = $i->get_IncidentID->get_content();
         
             # TODO -- convert assessment into an if/then block, in case we don't have one?
@@ -214,6 +215,7 @@ sub to_keypair {
             
             my $hash = {
                 id          => $id,
+                source      => $source,
                 guid        => $guid,
                 description => $description,
                 detecttime  => $detecttime,
@@ -271,7 +273,7 @@ sub to_keypair {
                                         if(/^(rdata)$/){
                                             ## todo -- make this work for many diff additional datat formatids (NS, CNAME, A, etc)
                                             #push(@$rdata),$e->get_content());
-                                            $rdata = $e->get_content() if($e->get_formatid() eq 'A');
+                                            $rdata = $e->get_content() if($e->get_formatid() =~ /^(A|PTR)$/);
                                             last;
                                         }
                                     }
@@ -313,6 +315,11 @@ sub to_keypair {
                     my $found = 0;
                     foreach my $a (@$ad){
                         for(lc($a->get_meaning())){
+                            if(/^hash$/) {
+                                $found = 1;
+                                $hash->{'hash'} = $a->get_content();
+                                last;
+                            }
                             if(/^malware hash$/){
                                 $found = 1;
                                 $hash->{'malware_hash'} = $a->get_content();

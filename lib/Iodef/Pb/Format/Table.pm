@@ -51,6 +51,7 @@ sub write_out {
     my %c;
     unless($cfg_fields){
         foreach my $e (@$array){
+            $c{'source'}        = 1 if($e->{'source'});
             $c{'address'}       = 1 if($e->{'address'});
             $c{'hash'}          = 1 if($e->{'hash'});
             $c{'protocol'}      = 1 if($e->{'protocol'});
@@ -74,6 +75,7 @@ sub write_out {
         }
     }
     
+    push(@cols,'source')        if($c{'source'});
     push(@cols,'address')       if($c{'address'});
     push(@cols,'rdata')         if($c{'rdata'});
     push(@cols,'malware_hash')  if($c{'malware_hash'});

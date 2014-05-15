@@ -111,6 +111,17 @@ sub process {
         });
     }
 
+    if($data->{'rdata'}){
+        $system->set_AdditionalData(
+            ExtensionType->new({
+                dtype       => ExtensionType::DtypeType::dtype_type_string(),
+                meaning     => 'rdata',
+                formatid    => $data->{'rdata_type'} || 'PTR',
+                content     => $data->{'rdata'},
+            })
+        );
+    }
+
     if($#additional_data > -1){
         $system->set_AdditionalData(\@additional_data);
     }
